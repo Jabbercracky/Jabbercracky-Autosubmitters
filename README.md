@@ -26,6 +26,6 @@ https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/python/jabbercracky-
 
 #### Go
 ```sh
-https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/tree/main/go/jabbercracky-client
+https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/tree/main/go
 ```
 
