@@ -2,6 +2,7 @@
 package api
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -13,6 +14,8 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
+	"time"
 )
 
 // ListHashLists fetches the list of hash lists from the server
@@ -234,4 +237,75 @@ func SubmitGameData(id string, filePath string) {
 
 	fmt.Printf("[*] [ID: %s] Username: %s | Found Count: %d | Added Score: %.2f | Total Score: %.2f | New Items: %d\n",
 		hashListID, username, int(foundCount.(float64)), addedScore, totalScore, newItemsCount)
+}
+
+// AutoSubmitGameData will continuously submit the file at the given path
+// to the server for points every 5 minutes.
+//
+// The function will keep a .submitted file in the current directory to
+// deduplicate submissions.
+//
+// API Endpoint: /api/game/hashlist/{id}
+//
+// Args:
+// id (string): The ID of the hash list to submit
+// filePath (string): The path to the hash list file
+// interval (int): The interval in minutes to submit the file
+//
+// Returns:
+// None
+func AutoSubmitGameData(id string, filePath string, interval int) {
+	submittedFilePath := ".submitted"
+	submittedHashes := make(map[string]bool)
+
+	for {
+		if _, err := os.Stat(submittedFilePath); os.IsNotExist(err) {
+			file, err := os.Create(submittedFilePath)
+			if err != nil {
+				fmt.Println("Error creating submitted file:", err)
+				return
+			}
+			file.Close()
+		}
+
+		file, err := os.Open(submittedFilePath)
+		if err != nil {
+			fmt.Println("Error opening submitted file:", err)
+			return
+		}
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			submittedHashes[scanner.Text()] = true
+		}
+		file.Close()
+
+		newSubmittedHashes := make(map[string]bool)
+		file, err = os.OpenFile(submittedFilePath, os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			fmt.Println("Error opening submitted file:", err)
+			return
+		}
+
+		fileContent, err := ioutil.ReadFile(filePath)
+		if err != nil {
+			fmt.Println("Error reading file content:", err)
+			return
+		}
+
+		hashes := strings.Split(string(fileContent), "\n")
+		for _, hash := range hashes {
+			if _, ok := submittedHashes[hash]; !ok {
+				SubmitGameData(id, filePath)
+				newSubmittedHashes[hash] = true
+			}
+		}
+
+		for hash := range newSubmittedHashes {
+			fmt.Fprintln(file, hash)
+		}
+		file.Close()
+
+		time.Sleep(time.Duration(interval) * time.Minute)
+	}
 }
