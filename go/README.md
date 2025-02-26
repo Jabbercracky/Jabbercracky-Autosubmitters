@@ -25,11 +25,6 @@ executing the CLI. Alternatively, you can set the environment variable inline wh
 JABBERCRACKY_API_KEY="your_api_key" jabbercracky-client list
 ```
 
-## Go Install
-```sh
-go install github.com/Jabbercracky/Jabbercracky-Autosubmitters/go/jabbercracky-client@latest
-```
-
 ## Usage
 
 The command line interface provides several subcommands. Here are the available options:

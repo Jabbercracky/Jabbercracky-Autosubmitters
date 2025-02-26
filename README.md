@@ -26,6 +26,6 @@ https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/python/jabbercracky-
 
 #### Go
 ```sh
-go install github.com/Jabbercracky/Jabbercracky-Autosubmitters/go/jabbercracky-client@latest
+https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/tree/main/go/jabbercracky-client
 ```
 
