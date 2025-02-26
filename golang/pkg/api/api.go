@@ -2,11 +2,13 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"jabbercracky-api-client/pkg/utils"
 	"net/http"
 	"os"
+	"sort"
 )
 
 // ListHashLists fetches the list of hash lists from the server
@@ -48,7 +50,38 @@ func ListHashLists() {
 		return
 	}
 
-	fmt.Println(string(body))
+	var result map[string]interface{}
+	if err := json.Unmarshal(body, &result); err != nil {
+		fmt.Println("Error unmarshalling response body:", err)
+		return
+	}
+
+	if hashLists, ok := result["hash_lists"].([]interface{}); ok {
+		type HashList struct {
+			ID   int    `json:"hash_list_id"`
+			Name string `json:"hash_list_name"`
+		}
+		var lists []HashList
+
+		fmt.Println("[*] Available hash lists:")
+		for _, hashList := range hashLists {
+			if hashListMap, ok := hashList.(map[string]interface{}); ok {
+				id := int(hashListMap["hash_list_id"].(float64))
+				name := hashListMap["hash_list_name"].(string)
+				lists = append(lists, HashList{ID: id, Name: name})
+			}
+		}
+
+		sort.Slice(lists, func(i, j int) bool {
+			return lists[i].ID < lists[j].ID
+		})
+
+		for _, list := range lists {
+			fmt.Printf("[*] [ID: %d] Name: %s\n", list.ID, list.Name)
+		}
+	} else {
+		fmt.Println("Invalid response format")
+	}
 }
 
 // DownloadHashList fetches the hash list with the given ID from the server
@@ -90,6 +123,9 @@ func DownloadHashList(id string) {
 		fmt.Println("Error reading response body:", err)
 		return
 	}
+
+	// Parse the response body to get the hash_list field and save it to a file
+	// hash_list is a list of hashes
 
 	filePath := fmt.Sprintf("%s.left", id)
 	err = ioutil.WriteFile(filePath, body, 0644)
