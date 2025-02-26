@@ -5,8 +5,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"jabbercracky-client/pkg/api"
 	"os"
+
+	"github.com/Jabbercracky/Jabbercracky-Autosubmitters/go/jabbercracky-client/pkg/api"
 )
 
 func main() {
