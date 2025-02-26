@@ -22,7 +22,7 @@ export JABBERCRACKY_API_KEY="your_api_key"
 This can be done in your shell profile or in a script that you run before
 executing the CLI. Alternatively, you can set the environment variable inline when running the script:
 ```sh
-JABBERCRACKY_API_KEY="your_api_key" jabbercracky-client.py list
+JABBERCRACKY_API_KEY="your_api_key" python3 jabbercracky-client.py list
 ```
 
 ## Usage
@@ -37,20 +37,20 @@ The command line interface provides several subcommands. Here are the available 
 ### Examples
 List Hash Lists
 ```sh
-jabbercracky-client.py list
+python3 jabbercracky-client.py list
 ```
 
 Download a Hash List
 ```sh
-jabbercracky-client.py download -id 12345
+python3 jabbercracky-client.py download -id 12345
 ```
 
 Submit Game Data
 ```sh
-jabbercracky-client.py submit -id 12345 -file path/to/file.txt
+python3 jabbercracky-client.py submit -id 12345 -file path/to/file.txt
 ```
 
 Auto-Submit Game Data
 ```sh
-jabbercracky-client.py auto-submit -id 12345 -file path/to/file.txt
+python3 jabbercracky-client.py auto-submit -id 12345 -file path/to/file.txt
 ```
