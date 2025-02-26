@@ -85,7 +85,7 @@ func ListHashLists() {
 }
 
 // DownloadHashList fetches the hash list with the given ID from the server
-// and saves it to the current directory.
+// and saves just the hash_list array to the current directory.
 //
 // API Endpoint: /api/game/hashlist/{id}
 //
@@ -124,14 +124,26 @@ func DownloadHashList(id string) {
 		return
 	}
 
-	// Parse the response body to get the hash_list field and save it to a file
-	// hash_list is a list of hashes
-
-	filePath := fmt.Sprintf("%s.left", id)
-	err = ioutil.WriteFile(filePath, body, 0644)
-	if err != nil {
-		fmt.Println("Error saving hash list:", err)
+	var result map[string]interface{}
+	if err := json.Unmarshal(body, &result); err != nil {
+		fmt.Println("Error unmarshalling response body:", err)
 		return
+	}
+
+	if hashList, ok := result["hash_list"].([]interface{}); ok {
+		filePath := fmt.Sprintf("%s.left", id)
+		file, err := os.Create(filePath)
+		if err != nil {
+			fmt.Println("Error creating file:", err)
+			return
+		}
+		defer file.Close()
+
+		for _, hash := range hashList {
+			fmt.Fprintln(file, hash)
+		}
+	} else {
+		fmt.Println("Invalid response format")
 	}
 }
 
