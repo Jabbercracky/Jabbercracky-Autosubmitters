@@ -2,12 +2,16 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"jabbercracky-api-client/pkg/utils"
+	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 )
 
@@ -172,14 +176,29 @@ func SubmitGameData(id string, filePath string) {
 	}
 	defer file.Close()
 
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile("file", filepath.Base(filePath))
+	if err != nil {
+		fmt.Println("Error creating form file:", err)
+		return
+	}
+	_, err = io.Copy(part, file)
+	if err != nil {
+		fmt.Println("Error copying file content:", err)
+		return
+	}
+	writer.Close()
+
 	url := fmt.Sprintf("https://jabbercracky.com/api/game/submit/%s", id)
-	req, err := http.NewRequest("POST", url, file)
+	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
 		return
 	}
 
 	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -189,11 +208,30 @@ func SubmitGameData(id string, filePath string) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading response body:", err)
 		return
 	}
 
-	fmt.Println(string(body))
+	var result map[string]interface{}
+	if err := json.Unmarshal(respBody, &result); err != nil {
+		fmt.Println("Error unmarshalling response body:", err)
+		return
+	}
+
+	if errMsg, ok := result["error"]; ok {
+		fmt.Printf("[*] [ID: %s] Username: %s | Found Count: 0 | Added Score: 0 | Total Score: 0 | New Items: 0 | Error: %s\n", id, "unknown", errMsg)
+		return
+	}
+
+	hashListID := result["hash_list_id"]
+	username := result["username"]
+	foundCount := result["found_count"]
+	addedScore := result["added_score"]
+	totalScore := result["total_score"]
+	newItemsCount := len(result["new_items"].([]interface{}))
+
+	fmt.Printf("[*] [ID: %s] Username: %s | Found Count: %d | Added Score: %.2f | Total Score: %.2f | New Items: %d\n",
+		hashListID, username, int(foundCount.(float64)), addedScore, totalScore, newItemsCount)
 }
