@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"jabbercracky-api-client/pkg/utils"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -17,6 +16,24 @@ import (
 	"strings"
 	"time"
 )
+
+// getJWTToken retrieves the JWT token from the environment variable
+// JABBERCRACKY_API_KEY.
+//
+// Args:
+// None
+//
+// Returns:
+// string: The JWT token
+// error: An error if the token is not set
+func getJWTToken() (string, error) {
+	token := os.Getenv("JABBERCRACKY_API_KEY")
+	if token == "" {
+		return "", fmt.Errorf("environment variable JABBERCRACKY_API_KEY is not set")
+	}
+
+	return strings.TrimSpace(token), nil
+}
 
 // ListHashLists fetches the list of hash lists from the server
 // and prints it to the console.
@@ -29,7 +46,7 @@ import (
 // Returns:
 // None
 func ListHashLists() {
-	token, err := utils.GetJWTToken()
+	token, err := getJWTToken()
 	if err != nil {
 		fmt.Println("Error getting JWT token:", err)
 		return
@@ -102,7 +119,7 @@ func ListHashLists() {
 // Returns:
 // None
 func DownloadHashList(id string) {
-	token, err := utils.GetJWTToken()
+	token, err := getJWTToken()
 	if err != nil {
 		fmt.Println("Error getting JWT token:", err)
 		return
@@ -166,7 +183,7 @@ func DownloadHashList(id string) {
 // Returns:
 // None
 func SubmitGameData(id string, filePath string) {
-	token, err := utils.GetJWTToken()
+	token, err := getJWTToken()
 	if err != nil {
 		fmt.Println("Error getting JWT token:", err)
 		return
@@ -255,7 +272,7 @@ func SubmitGameData(id string, filePath string) {
 // Returns:
 // None
 func AutoSubmitGameData(id string, filePath string, interval int) {
-	submittedFilePath := ".submitted"
+	submittedFilePath := fmt.Sprintf("%s.submitted", id)
 	submittedHashes := make(map[string]bool)
 
 	for {
@@ -280,7 +297,8 @@ func AutoSubmitGameData(id string, filePath string, interval int) {
 		}
 		file.Close()
 
-		newSubmittedHashes := make(map[string]bool)
+		SubmitGameData(id, filePath)
+
 		file, err = os.OpenFile(submittedFilePath, os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Println("Error opening submitted file:", err)
@@ -296,13 +314,8 @@ func AutoSubmitGameData(id string, filePath string, interval int) {
 		hashes := strings.Split(string(fileContent), "\n")
 		for _, hash := range hashes {
 			if _, ok := submittedHashes[hash]; !ok {
-				SubmitGameData(id, filePath)
-				newSubmittedHashes[hash] = true
+				fmt.Fprintln(file, hash)
 			}
-		}
-
-		for hash := range newSubmittedHashes {
-			fmt.Fprintln(file, hash)
 		}
 		file.Close()
 
