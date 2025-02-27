@@ -1,3 +1,3 @@
-module github.com/Jabbercracky/Jabbercracky-Autosubmitters/go/jabbercracky-client
+module jabbercracky-client
 
 go 1.23.5
