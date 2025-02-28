@@ -19,7 +19,7 @@ The following autosubmitters are available in this repository:
 
 ## 101 Guide
 No idea what to do? No problem! We have a getting started guide available.
-- [Getting Started](https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/GUIDE.md)
+- https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/blob/main/GUIDE.md
 
 ## Quick Download
 
