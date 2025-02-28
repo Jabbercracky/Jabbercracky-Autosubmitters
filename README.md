@@ -17,6 +17,10 @@ The following autosubmitters are available in this repository:
 - [Python](python/README.md)
 - [Go](go/README.md)
 
+## 101 Guide
+No idea what to do? No problem! We have a getting started guide available.
+- [Getting Started](https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/GUIDE.md)
+
 ## Quick Download
 
 #### Python
