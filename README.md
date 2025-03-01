@@ -22,6 +22,10 @@ No idea what to do? No problem! We have a getting started guide available.
 - https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/blob/main/GUIDE.md
 
 ## Quick Download
+#### Curl
+```sh
+https://github.com/Jabbercracky/Jabbercracky-Autosubmitters/tree/main/curl
+```
 
 #### Python
 ```sh
