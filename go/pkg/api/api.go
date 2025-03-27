@@ -257,7 +257,7 @@ func SubmitGameData(id string, filePath string) {
 }
 
 // AutoSubmitGameData will continuously submit the file at the given path
-// to the server for points every 5 minutes.
+// to the server for points every hour.
 //
 // The function will keep a .submitted file in the current directory to
 // deduplicate submissions.
@@ -267,7 +267,7 @@ func SubmitGameData(id string, filePath string) {
 // Args:
 // id (string): The ID of the hash list to submit
 // filePath (string): The path to the hash list file
-// interval (int): The interval in minutes to submit the file
+// interval (int): The interval in hours to submit the file
 //
 // Returns:
 // None
@@ -319,6 +319,6 @@ func AutoSubmitGameData(id string, filePath string, interval int) {
 		}
 		file.Close()
 
-		time.Sleep(time.Duration(interval) * time.Minute)
+		time.Sleep(time.Duration(interval) * time.Hour)
 	}
 }

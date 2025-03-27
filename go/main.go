@@ -41,7 +41,7 @@ func main() {
 	autoSubmitCmd := flag.NewFlagSet("auto-submit", flag.ExitOnError)
 	autoSubmitCmd.Usage = func() {
 		fmt.Println("[*] Usage: auto-submit -id <Hash List ID> -file <File Path>")
-		fmt.Println("  Automatically submits game data from the specified file to the hash list with the given ID every 5 minutes.")
+		fmt.Println("  Automatically submits game data from the specified file to the hash list with the given ID every hour.")
 		fmt.Println("Example:")
 		fmt.Println("  $ jabbercracky-client auto-submit -id 12345 -file path/to/file.txt")
 	}

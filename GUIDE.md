@@ -4,7 +4,7 @@
 The following guide will help you set up and run the Jabbercracky
 Autosubmitters. The autosubmitters are a set of scripts that are written in
 various languages that will automatically submit your Jabbercracky founds to
-the server every five minutes.
+the server every hour.
 
 ### Prerequisites
 - Python 3.6 or higher
@@ -67,7 +67,7 @@ flag, the list ID, and the `-file` flag with the path to the founds file:
 python3 autosubmitter.py submit -id 1 -file founds.txt
 ```
 
-Then to automatically submit every five minutes, run the `autosubmit` command.
+Then to automatically submit every hour, run the `autosubmit` command.
 
 ```bash
 python3 autosubmitter.py autosubmit -id 1 -file founds.txt

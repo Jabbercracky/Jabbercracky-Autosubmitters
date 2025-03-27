@@ -32,7 +32,7 @@ The command line interface provides several subcommands. Here are the available 
 - list: Lists all available hash lists.
 - download: Downloads the hash list specified by the given ID.
 - submit: Submits game data from the specified file to the hash list with the given ID.
-- auto-submit: Automatically submits game data from the specified file to the hash list with the given ID every 5 minutes.
+- auto-submit: Automatically submits game data from the specified file to the hash list with the given ID every hour.
 
 ### Examples
 List Hash Lists

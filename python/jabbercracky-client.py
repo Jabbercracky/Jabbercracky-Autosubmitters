@@ -89,7 +89,7 @@ def submit_game_data(id, file_path):
 
 def auto_submit_game_data(id, file_path, interval):
     """
-    Continuously submits the file at the given path to the server for points every 5 minutes.
+    Continuously submits the file at the given path to the server for points every hour.
 
     The function will keep a .submitted file in the current directory to deduplicate submissions.
 
@@ -98,7 +98,7 @@ def auto_submit_game_data(id, file_path, interval):
     Args:
     id (str): The ID of the hash list to submit
     file_path (str): The path to the hash list file
-    interval (int): The interval in minutes to submit the file
+    interval (int): The interval in hours to submit the file
     """
     submitted_file_path = f"{id}.submitted"
     submitted_hashes = set()
@@ -121,7 +121,7 @@ def auto_submit_game_data(id, file_path, interval):
                         file.write(f"{hash_item}\n")
                         submitted_hashes.add(hash_item)
 
-        time.sleep(interval * 60)
+        time.sleep(interval * 60 * 60)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='jabbercracky-client command line interface')
@@ -135,7 +135,7 @@ if __name__ == "__main__":
     submit_parser.add_argument('-id', required=True, help='Hash List ID')
     submit_parser.add_argument('-file', required=True, help='File path')
 
-    auto_submit_parser = subparsers.add_parser('auto-submit', help='Automatically submits game data from the specified file to the hash list with the given ID every 5 minutes')
+    auto_submit_parser = subparsers.add_parser('auto-submit', help='Automatically submits game data from the specified file to the hash list with the given ID every hour')
     auto_submit_parser.add_argument('-id', required=True, help='Hash List ID')
     auto_submit_parser.add_argument('-file', required=True, help='File path')
 
@@ -148,6 +148,6 @@ if __name__ == "__main__":
     elif args.command == 'submit':
         submit_game_data(args.id, args.file)
     elif args.command == 'auto-submit':
-        auto_submit_game_data(args.id, args.file, 5)
+        auto_submit_game_data(args.id, args.file, 1)
     else:
         parser.print_help()
